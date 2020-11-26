@@ -4,6 +4,7 @@
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int gappx     = 6;       /* gap pixel between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
+static const int swallowfloating    = 0;        /* 1 means swallowing floating windows by default*/
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "NotoSansMono-Regular:pixelsize=12:antialias=true:autohint=true", "JoyPixels:pixelsize=10:antialias=true:autohint=true" };
@@ -13,6 +14,8 @@ static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
+static const unsigned int baralpha = 0xd0;
+static const unsigned int borderalpha = OPAQUE;
 static const char col1[]            = "#ffffff";
 static const char col2[]            = "#ffffff";
 static const char col3[]            = "#ffffff";
@@ -41,6 +44,17 @@ static const char *colors[][3]      = {
 	[SchemeCol11] = { col11,     col_gray1, col_gray2 },
 	[SchemeCol12] = { col12,     col_gray1, col_gray2 },
 	[SchemeSel]   = { col_gray4, col_cyan,  col_cyan  },
+	[SchemeStatus]  = { col_gray3, col_gray1,  "#000000"  }, // Statusbar right {text,background,not used but cannot be empty}
+	[SchemeTagsSel]  = { col_gray4, col_cyan,  "#000000"  }, // Tagbar left selected {text,background,not used but cannot be empty}
+    [SchemeTagsNorm]  = { col_gray3, col_gray1,  "#000000"  }, // Tagbar left unselected {text,background,not used but cannot be empty}
+    [SchemeInfoSel]  = { col_gray4, col_cyan,  "#000000"  }, // infobar middle  selected {text,background,not used but cannot be empty}
+    [SchemeInfoNorm]  = { col_gray3, col_gray1,  "#000000"  }, // infobar middle  unselected {text,background,not used but cannot be empty}
+};
+
+static const unsigned int alphas[][3]      = {
+	/*               fg      bg        border     */
+	[SchemeNorm] = { OPAQUE, baralpha, borderalpha },
+	[SchemeSel]  = { OPAQUE, baralpha, borderalpha },
 };
 
 /* tagging */
@@ -61,11 +75,14 @@ static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] 
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 
+#include "tcl.c"
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",      tile },    /* first entry is default */
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
+	{ "|||",      tcl },
+	{ "[D]",      deck },
 };
 
 /* key definitions */
@@ -98,11 +115,11 @@ static const char *mocpprev[] = {"mocp", "-r", "&"};
 static const char *pausecmd[] = {"playerctl", "play-pause", NULL };
 static const char *previouscmd[] = {"playerctl", "previous", NULL };
 static const char *nextcmd[] = {"playerctl", "next", NULL };
-static const char *lessbright[] = {"sh", "-c", "xbacklight -dec 10 && sigdwmblocks 11", NULL};
-static const char *morebright[] = {"sh", "-c", "xbacklight -inc 10 && sigdwmblocks 11", NULL};
-static const char *volumeup[] = {"sh", "-c", "amixer set Master 5%+ && sigdwmblocks 12", NULL};
-static const char *volumedown[] = {"sh", "-c", "amixer set Master 5%- && sigdwmblocks 12", NULL};
-static const char *volumemute[] = {"sh", "-c", "amixer set Master toggle && sigdwmblocks 12", NULL};
+static const char *lessbright[] = {"sh", "-c", "xbacklight -dec 10 && sigdwmblocks 6", NULL};
+static const char *morebright[] = {"sh", "-c", "xbacklight -inc 10 && sigdwmblocks 6", NULL};
+static const char *volumeup[] = {"sh", "-c", "amixer set Master 5%+ && sigdwmblocks 7", NULL};
+static const char *volumedown[] = {"sh", "-c", "amixer set Master 5%- && sigdwmblocks 7", NULL};
+static const char *volumemute[] = {"sh", "-c", "amixer set Master toggle && sigdwmblocks 7", NULL};
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -115,12 +132,13 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_a,      spawn,          {.v = alsamixercmd } },
 	{ MODKEY|ShiftMask,             XK_b,      spawn,          {.v = bluetoothcmd } },
  	{ MODKEY,                       XK_space,  spawn,          {.v = mocpcmd } },
-	{ MODKEY|ShiftMask,             XK_space,  spawn,          {.v = mocpskip } },
 	{ MODKEY|ControlMask,           XK_p,      spawn,          {.v = mocpprev } },
 	{ MODKEY|ShiftMask,             XK_p,      spawn,          {.v = htopcmd } },
 	{ MODKEY|ShiftMask,             XK_z,      spawn,          {.v = lessbright } },
 	{ MODKEY|ShiftMask,             XK_x,      spawn,          {.v = morebright } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
+	{ MODKEY|ShiftMask,             XK_j,      rotatestack,    {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_k,      rotatestack,    {.i = -1 } },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
@@ -134,7 +152,9 @@ static Key keys[] = {
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_space,  setlayout,      {0} },
+	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[3]} },
+	{ MODKEY,                       XK_c,      setlayout,      {.v = &layouts[3]} },
+	{ MODKEY|ShiftMask,             XK_f,      fullscreen,     {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
@@ -142,6 +162,9 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_minus, 		setborderpx,    {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_plus, 		setborderpx,    {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_numbersign, 	setborderpx,    {.i = 0 } },
 
 	{ 0,                       XF86XK_AudioRaiseVolume,  spawn,          {.v = volumeup } },
 	{ 0,                       XF86XK_AudioLowerVolume,  spawn,          {.v = volumedown } },
@@ -183,9 +206,9 @@ static Button buttons[] = {
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
-	{ ClkTagBar,            0,              Button1,        view,           {0} },
-	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
-	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
-	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
+	/*{ ClkTagBar,            0,              Button1,        view,           {0} },*/
+/*	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },*/
+/*	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },*/
+/*	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },*/
 };
 
