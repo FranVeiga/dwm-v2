@@ -98,11 +98,11 @@ static const char *mocpprev[] = {"mocp", "-r", "&"};
 static const char *pausecmd[] = {"playerctl", "play-pause", NULL };
 static const char *previouscmd[] = {"playerctl", "previous", NULL };
 static const char *nextcmd[] = {"playerctl", "next", NULL };
-static const char *lessbright[] = {"sh", "-c", "xbacklight -dec 10 && sigdwmblocks 11", NULL};
-static const char *morebright[] = {"sh", "-c", "xbacklight -inc 10 && sigdwmblocks 11", NULL};
-static const char *volumeup[] = {"sh", "-c", "amixer set Master 5%+ && sigdwmblocks 12", NULL};
-static const char *volumedown[] = {"sh", "-c", "amixer set Master 5%- && sigdwmblocks 12", NULL};
-static const char *volumemute[] = {"sh", "-c", "amixer set Master toggle && sigdwmblocks 12", NULL};
+static const char *lessbright[] = {"sh", "-c", "xbacklight -dec 10 && sigdwmblocks 6", NULL};
+static const char *morebright[] = {"sh", "-c", "xbacklight -inc 10 && sigdwmblocks 6", NULL};
+static const char *volumeup[] = {"sh", "-c", "amixer set Master 5%+ && sigdwmblocks 7", NULL};
+static const char *volumedown[] = {"sh", "-c", "amixer set Master 5%- && sigdwmblocks 7", NULL};
+static const char *volumemute[] = {"sh", "-c", "amixer set Master toggle && sigdwmblocks 7", NULL};
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -183,9 +183,9 @@ static Button buttons[] = {
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },
-	{ ClkTagBar,            0,              Button1,        view,           {0} },
-	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
-	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
-	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
+	/*{ ClkTagBar,            0,              Button1,        view,           {0} },*/
+/*	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },*/
+/*	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },*/
+/*	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },*/
 };
 
