@@ -34,19 +34,19 @@ static const char col11[]           = "#ffffff";
 static const char col12[]           = "#ffffff";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm]  = { col_gray3, col_gray1, col_primary },
-	[SchemeCol1]  = { col1,      col_gray1, col_gray2 },
-	[SchemeCol2]  = { col2,      col_gray1, col_gray2 },
-	[SchemeCol3]  = { col3,      col_gray1, col_gray2 },
-	[SchemeCol4]  = { col4,      col_gray1, col_gray2 },
-	[SchemeCol5]  = { col5,      col_gray1, col_gray2 },
-	[SchemeCol6]  = { col6,      col_gray1, col_gray2 },
-	[SchemeCol7]  = { col7,      col_gray1, col_gray2 },
-	[SchemeCol8]  = { col8,      col_gray1, col_gray2 },
-	[SchemeCol9]  = { col8,      col_gray1, col_gray2 },
-	[SchemeCol10] = { col10,     col_gray1, col_gray2 },
-	[SchemeCol11] = { col11,     col_gray1, col_gray2 },
-	[SchemeCol12] = { col12,     col_gray1, col_gray2 },
+	[SchemeNorm]  = { col_gray3, col_primary, col_primary },
+	[SchemeCol1]  = { col1,      col_primary, col_gray2 },
+	[SchemeCol2]  = { col2,      col_primary, col_gray2 },
+	[SchemeCol3]  = { col3,      col_primary, col_gray2 },
+	[SchemeCol4]  = { col4,      col_primary, col_gray2 },
+	[SchemeCol5]  = { col5,      col_primary, col_gray2 },
+	[SchemeCol6]  = { col6,      col_primary, col_gray2 },
+	[SchemeCol7]  = { col7,      col_primary, col_gray2 },
+	[SchemeCol8]  = { col8,      col_primary, col_gray2 },
+	[SchemeCol9]  = { col8,      col_primary, col_gray2 },
+	[SchemeCol10] = { col10,     col_primary, col_gray2 },
+	[SchemeCol11] = { col11,     col_primary, col_gray2 },
+	[SchemeCol12] = { col12,     col_primary, col_gray2 },
 	[SchemeSel]   = { col_gray4, col_cyan,  col_secondary  },
 	[SchemeStatus]  = { col_gray3, col_primary,  "#000000"  }, // Statusbar right {text,background,not used but cannot be empty}
 	[SchemeTagsSel]  = { col_gray4, col_secondary,  "#000000"  }, // Tagbar left selected {text,background,not used but cannot be empty}
@@ -59,6 +59,11 @@ static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */
 	[SchemeNorm] = { OPAQUE, baralpha, borderalpha },
 	[SchemeSel]  = { OPAQUE, baralpha, borderalpha },
+	[SchemeStatus]  = { OPAQUE, baralpha, borderalpha  },
+	[SchemeTagsSel]  = { OPAQUE, baralpha, borderalpha  },
+    [SchemeTagsNorm]  = { OPAQUE, baralpha, borderalpha  },
+    [SchemeInfoSel]  = { OPAQUE, baralpha, borderalpha  },
+    [SchemeInfoNorm]  = { OPAQUE, baralpha, borderalpha  },
 };
 
 /* tagging */
@@ -102,7 +107,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_primary, "-nf", col_gray3, "-sb", col_secondary, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
 static const char *browsercmd[]  = { "vivaldi-snapshot", NULL };
 static const char *lowbrowsercmd[]  = { "qutebrowser", NULL };
@@ -158,8 +163,9 @@ static Key keys[] = {
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[3]} },
 	{ MODKEY,                       XK_c,      setlayout,      {.v = &layouts[4]} },
-	{ MODKEY|ShiftMask,             XK_f,      fullscreen,     {0} },
+	{ MODKEY|ShiftMask,             XK_m,      fullscreen,     {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+	{ MODKEY,                       XK_s,      togglesticky,   {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
