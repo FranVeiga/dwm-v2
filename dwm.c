@@ -542,7 +542,7 @@ buttonpress(XEvent *e)
 									continue;
 
                                     x += TEXTW(tags[++i]);
-								} while (x <= 0);
+								} while (x <= 0 && i < LENGTH(tags));
                                 click = ClkTagBar;
                                 arg.ui = 1 << i;
                         } else

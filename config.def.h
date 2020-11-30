@@ -3,7 +3,7 @@
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int gappx     = 6;       /* gap pixel between windows */
-static const unsigned int snap      = 32;       /* snap pixel */
+static const unsigned int snap      = 5;       /* snap pixel */
 static const int swallowfloating    = 0;        /* 1 means swallowing floating windows by default*/
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
@@ -34,19 +34,19 @@ static const char col11[]           = "#ffffff";
 static const char col12[]           = "#ffffff";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm]  = { col_gray3, col_gray1, col_primary },
-	[SchemeCol1]  = { col1,      col_gray1, col_gray2 },
-	[SchemeCol2]  = { col2,      col_gray1, col_gray2 },
-	[SchemeCol3]  = { col3,      col_gray1, col_gray2 },
-	[SchemeCol4]  = { col4,      col_gray1, col_gray2 },
-	[SchemeCol5]  = { col5,      col_gray1, col_gray2 },
-	[SchemeCol6]  = { col6,      col_gray1, col_gray2 },
-	[SchemeCol7]  = { col7,      col_gray1, col_gray2 },
-	[SchemeCol8]  = { col8,      col_gray1, col_gray2 },
-	[SchemeCol9]  = { col8,      col_gray1, col_gray2 },
-	[SchemeCol10] = { col10,     col_gray1, col_gray2 },
-	[SchemeCol11] = { col11,     col_gray1, col_gray2 },
-	[SchemeCol12] = { col12,     col_gray1, col_gray2 },
+	[SchemeNorm]  = { col_gray3, col_primary, col_primary },
+	[SchemeCol1]  = { col1,      col_primary, col_gray2 },
+	[SchemeCol2]  = { col2,      col_primary, col_gray2 },
+	[SchemeCol3]  = { col3,      col_primary, col_gray2 },
+	[SchemeCol4]  = { col4,      col_primary, col_gray2 },
+	[SchemeCol5]  = { col5,      col_primary, col_gray2 },
+	[SchemeCol6]  = { col6,      col_primary, col_gray2 },
+	[SchemeCol7]  = { col7,      col_primary, col_gray2 },
+	[SchemeCol8]  = { col8,      col_primary, col_gray2 },
+	[SchemeCol9]  = { col8,      col_primary, col_gray2 },
+	[SchemeCol10] = { col10,     col_primary, col_gray2 },
+	[SchemeCol11] = { col11,     col_primary, col_gray2 },
+	[SchemeCol12] = { col12,     col_primary, col_gray2 },
 	[SchemeSel]   = { col_gray4, col_cyan,  col_secondary  },
 	[SchemeStatus]  = { col_gray3, col_primary,  "#000000"  }, // Statusbar right {text,background,not used but cannot be empty}
 	[SchemeTagsSel]  = { col_gray4, col_secondary,  "#000000"  }, // Tagbar left selected {text,background,not used but cannot be empty}
@@ -59,6 +59,11 @@ static const unsigned int alphas[][3]      = {
 	/*               fg      bg        border     */
 	[SchemeNorm] = { OPAQUE, baralpha, borderalpha },
 	[SchemeSel]  = { OPAQUE, baralpha, borderalpha },
+	[SchemeStatus]  = { OPAQUE, baralpha, borderalpha  },
+	[SchemeTagsSel]  = { OPAQUE, baralpha, borderalpha  },
+    [SchemeTagsNorm]  = { OPAQUE, baralpha, borderalpha  },
+    [SchemeInfoSel]  = { OPAQUE, baralpha, borderalpha  },
+    [SchemeInfoNorm]  = { OPAQUE, baralpha, borderalpha  },
 };
 
 /* tagging */
@@ -102,7 +107,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_primary, "-nf", col_gray3, "-sb", col_secondary, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
 static const char *browsercmd[]  = { "vivaldi-snapshot", NULL };
 static const char *lowbrowsercmd[]  = { "qutebrowser", NULL };
@@ -124,6 +129,8 @@ static const char *morebright[] = {"sh", "-c", "xbacklight -inc 10 && sigdwmbloc
 static const char *volumeup[] = {"sh", "-c", "amixer set Master 5%+ && sigdwmblocks 7", NULL};
 static const char *volumedown[] = {"sh", "-c", "amixer set Master 5%- && sigdwmblocks 7", NULL};
 static const char *volumemute[] = {"sh", "-c", "amixer set Master toggle && sigdwmblocks 7", NULL};
+static const char *shutdowncmd[] = {"/bin/sh", "dmenu_shutdown", NULL };
+static const char *logoutcmd[] = {"/bin/sh", "dmenu_dwm_logout", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -158,7 +165,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[3]} },
 	{ MODKEY,                       XK_c,      setlayout,      {.v = &layouts[4]} },
-	{ MODKEY|ShiftMask,             XK_f,      fullscreen,     {0} },
+	{ MODKEY|ShiftMask,             XK_m,      fullscreen,     {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_s,      togglesticky,   {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
@@ -194,8 +201,10 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+	{ MODKEY|ShiftMask,             XK_q,      spawn,          {.v = logoutcmd } },
+	{ MODKEY|ControlMask|ShiftMask, XK_q,      quit,           {0} },
 	{ MODKEY|ControlMask,			XK_r,      quit,           {1} }, 
+	{ MODKEY|ShiftMask,			    XK_s,      spawn,          {.v = shutdowncmd } }, 
 };
 
 /* button definitions */
