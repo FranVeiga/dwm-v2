@@ -74,11 +74,12 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class     instance  title           tags mask  isfloating  isterminal  noswallow  monitor */
-	{ "Gimp",    NULL,     NULL,           0,         1,          0,           0,        -1 },
-	{ "Firefox", NULL,     NULL,           1 << 8,    0,          0,          -1,        -1 },
-	{ "St",      NULL,     NULL,           0,         0,          1,           0,        -1 },
-	{ NULL,      NULL,     "Event Tester", 0,         0,          0,           1,        -1 }, /* xev */
+	/* class            instance  title           tags mask  isfloating  isterminal  noswallow  monitor */
+	{ "Gimp",           NULL,     NULL,           0,         1,          0,           0,        -1 },
+	{ "Firefox",        NULL,     NULL,           1 << 8,    0,          0,          -1,        -1 },
+	{ "St",             NULL,     NULL,           0,         0,          1,           0,        -1 },
+	{ "Alacritty",      NULL,     NULL,           0,         0,          1,           0,        -1 },
+	{ NULL,             NULL,     "Event Tester", 0,         0,          0,           1,        -1 }, /* xev */
 };
 
 /* layout(s) */
@@ -110,16 +111,16 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_primary, "-nf", col_gray3, "-sb", col_secondary, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "st", NULL };
+static const char *termcmd[]  = { "alacritty", NULL };
 static const char *browsercmd[]  = { "vivaldi-snapshot", NULL };
 static const char *lowbrowsercmd[]  = { "qutebrowser", NULL };
 static const char *screenshotcmd[]  = { "flameshot", "gui" , NULL};
-static const char *alsamixercmd[] = {"st", "-e", "alsamixer" };
+static const char *alsamixercmd[] = {"alacritty", "-e", "alsamixer" };
 static const char *pavucontrolcmd[] = {"pavucontrol", NULL };
 static const char *filecmd[] = { "pcmanfm", NULL };
 static const char *bluetoothcmd[] = { "blueman-manager", NULL };
-static const char *htopcmd[] = {"st", "-e", "htop" };
-static const char *mocpcmd[] = {"st", "-e", "mocp", "-T", "nightly_theme"};
+static const char *htopcmd[] = {"alacritty", "-e", "htop" };
+static const char *mocpcmd[] = {"alacritty", "-e", "mocp", "-T", "nightly_theme"};
 static const char *mocpskip[] = {"mocp", "-f"};
 static const char *mocppause[] = {"mocp", "-G", "&"};
 static const char *mocpprev[] = {"mocp", "-r", "&"};
