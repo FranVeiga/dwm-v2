@@ -7,7 +7,7 @@ static const unsigned int snap      = 5;       /* snap pixel */
 static const int swallowfloating    = 0;        /* 1 means swallowing floating windows by default*/
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "NotoSansMono-Regular:pixelsize=12:antialias=true:autohint=true", "JoyPixels:pixelsize=10:antialias=true:autohint=true" };
+static const char *fonts[]          = { "UbuntuMono Nerd Font:size=10:weight=bold:antialias=true:autohint:true" };
 static const char dmenufont[]       = "monospace:size=10";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
@@ -17,6 +17,7 @@ static const char col_cyan[]        = "#005577";
 
 static const char col_primary[]        = "#050517";
 static const char col_secondary[]        = "#f6511d";
+static const char col_status[]        = "#AA8CFF";
 
 static const unsigned int baralpha = 0xe6;
 static const unsigned int borderalpha = OPAQUE;
@@ -48,7 +49,7 @@ static const char *colors[][3]      = {
 	[SchemeCol11] = { col11,     col_primary, col_gray2 },
 	[SchemeCol12] = { col12,     col_primary, col_gray2 },
 	[SchemeSel]   = { col_gray4, col_cyan,  col_secondary  },
-	[SchemeStatus]  = { col_gray3, col_primary,  "#000000"  }, // Statusbar right {text,background,not used but cannot be empty}
+	[SchemeStatus]  = { col_status, col_primary,  "#000000"  }, // Statusbar right {text,background,not used but cannot be empty}
 	[SchemeTagsSel]  = { col_primary, col_secondary,  "#000000"  }, // Tagbar left selected {text,background,not used but cannot be empty}
     [SchemeTagsNorm]  = { col_gray3, col_primary,  "#000000"  }, // Tagbar left unselected {text,background,not used but cannot be empty}
     [SchemeInfoSel]  = { col_gray4, col_primary,  "#000000"  }, // infobar middle  selected {text,background,not used but cannot be empty}
@@ -67,7 +68,19 @@ static const unsigned int alphas[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "WEB", "TTY", "DEV", "DEV2", "GAME", "DUNNO", "WWYEUT", "DUMP", "MUSIC" };
+/* static const char *tags[] = { "WEB", "TTY", "DEV", "DEV2", "GAME", "VM", "WWYEUT", "DUMP", "MUSIC" }; */
+static const char *tags[] = { "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  ", "  " };
+
+
+
+
+
+
+
+
+
+
+
 
 static const Rule rules[] = {
 	/* xprop(1):
